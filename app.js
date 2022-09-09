@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 const post_art = require('./config/routes');
 app.use('/',post_art);
 
-let port = process.env.PORT || 8000;
+let port = process.env.PORT || 5000;
 
 
 
