@@ -68,6 +68,7 @@ exports.register = async (req, res) => {
 
         users["cupan_code"] = c_code[0].toUpperCase();
         users["wallet"] = "";
+        users["first_login"] = 0;
         users["last_login_at"] = new Date();
         users["createdAt"] = new Date();
 
