@@ -67,7 +67,7 @@ exports.register = async (req, res) => {
         console.log("cupan_code....", c_code);
 
         users["cupan_code"] = c_code[0].toUpperCase();
-        users["wallet"] = "";
+        users["wallet"] = 0;
         users["first_login"] = 0;
         users["last_login_at"] = new Date();
         users["createdAt"] = new Date();
@@ -280,4 +280,79 @@ exports.check_cupanCode = async (req, res) => {
     }
 
 
+};
+
+exports.UserProfile = async (req, res) => {
+    let resp = {};
+    let user_id = ObjectID(req.decoded._id).valueOf();
+
+    db.get().collection("users").findOne({_id:user_id}).then( result => {
+        resp["success"] = 200;
+        resp["message"] = "Successfull.";
+        resp["data"] = result;
+
+        return res.status(200).json(resp);
+    }).catch(err => {
+        console.log("error....",err);
+        resp["success"] = 500;
+        resp["message"] = "Something went wrong.";
+
+        return res.status(200).json(resp);
+
+    });
+};
+
+exports.AddMoney = async (req, res) => {
+    let resp = {};
+    let user_id = ObjectID(req.decoded._id).valueOf();
+    console.log("wallet...",req.userData.wallet);
+
+    if(req.body.type == "ads"){
+        let amount = parseInt(req.userData.wallet) + 5;
+
+        db.get().collection("users").findOneAndUpdate(
+            {_id:user_id},
+            {
+                $set:{
+                    wallet:amount,
+                    updatedAt: new Date(),
+                }
+            },
+            { returnOriginal: true }
+            ).then( result => {
+            resp["success"] = 200;
+            resp["message"] = "Successfully Earned.";
+            result.value.wallet = amount
+            resp["data"] = result.value;
+    
+            return res.status(200).json(resp);
+        }).catch(err => {
+            console.log("error....",err);
+            resp["success"] = 500;
+            resp["message"] = "Something went wrong.";
+    
+            return res.status(200).json(resp);
+    
+        });
+    }
+    
+}
+
+exports.getImages = async (req, res) => {
+    let resp = {};
+
+    db.get().collection("images").find().toArray().then((result) => {
+        resp["success"] = 200;
+        resp["message"] = "Successfull.";
+        resp["data"] = result;
+
+        return res.status(200).json(resp);
+    }).catch(err => {
+        console.log("error....", err);
+        resp["success"] = 500;
+        resp["message"] = "Something went wrong.";
+
+        return res.status(200).json(resp);
+
+    });
 }

@@ -1,0 +1,69 @@
+<body>
+    <%- include("./partials/head.ejs") %>
+  <div id="app">
+  
+    <%- include("./partials/navbar.ejs") %>
+  
+    <%- include("./partials/aside.ejs") %>
+  
+    <section class="section main-section">
+      <div class="card mb-6">
+        <header class="card-header">
+          <p class="card-header-title">
+            <span class="icon"><i class="mdi mdi-ballot"></i></span>
+            Add Category
+          </p>
+        </header>
+        <div class="card-content">
+          <form action="/admin/addcat" method="post">
+            <div class="field">
+              <label class="label">Category Name</label>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control icons-left">
+                    <input class="input" type="text" placeholder="Category Name" name="cat_name">
+                    <span class="icon left"><i class="mdi mdi-cat"></i></span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label">Image Url</label>
+                  <div class="control">
+                    <input class="input" type="text" placeholder="Image Url" name="image_url">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Visibility</label>
+              <div class="control">
+                <div class="select">
+                  <select name="visibility">
+                    <option value="1">True</option>
+                    <option value="0">False</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="field grouped">
+              <div class="control">
+                <button type="submit" class="button green">
+                  Submit
+                </button>
+              </div>
+              <div class="control">
+                <button type="reset" class="button red">
+                  Reset
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  
+    <%- include("./partials/footer.ejs") %>
+  </div>
+  
+  </body>
+  </html>
+  

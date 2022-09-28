@@ -5,9 +5,14 @@ require('dotenv').config()
 const db = require('./config/db.js');
 
 const cors = require('cors');
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));
+
+app.set('view engine', 'ejs');
+app.use(express.static(__dirname + '/public/'));
 
 const post_art = require('./config/routes');
 app.use('/',post_art);

@@ -1,0 +1,87 @@
+<%- include("./partials/head.ejs") %>
+<body>
+
+<div id="app">
+
+  <%- include("./partials/navbar.ejs") %>
+
+  <%- include("./partials/aside.ejs") %>
+  
+  <section class="section main-section">
+    <div class="card has-table">
+      <header class="card-header">
+        <p class="card-header-title">
+          <span class="icon"><i class="mdi mdi-account-multiple"></i></span>
+          Users
+        </p>
+        <a href="/users" class="card-header-icon">
+          <span class="icon"><i class="mdi mdi-reload"></i></span>
+        </a>
+      </header>
+      <div class="card-content">
+        <table>
+          <thead>
+          <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Business Name</th>
+            <th>Phone</th>
+            <th>Wallet</th>
+            <th>CreatedAt</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+            <% for(var i=0; i<resp.users.length; i++) { %>
+          <tr>
+            <td class="image-cell">
+              <div class="image">
+                <span class="icon"><i class="mdi mdi-account"></i></span>
+              </div>
+            </td>
+            <td data-label="Name"><%= resp.users[i].full_name %></td>
+            <td data-label="Business Name"><%= resp.users[i].business_name %></td>
+            <td data-label="Phone"><%= resp.users[i].phone %></td>
+            <td data-label="Wallet">
+              <%= resp.users[i].wallet %>
+            </td>
+            <td data-label="CreatedAt">
+              <small class="text-gray-500" title="Oct 25, 2021"><%= resp.users[i].createdAt.toDateString() %></small>
+            </td>
+            <td class="actions-cell">
+              <div class="buttons right nowrap">
+                <button class="button small green --jb-modal"  data-target="sample-modal-2" type="button">
+                  <span class="icon"><i class="mdi mdi-eye"></i></span>
+                </button>
+                <button class="button small red --jb-modal" data-target="sample-modal" type="button">
+                  <span class="icon"><i class="mdi mdi-trash-can"></i></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <% } %> 
+          </tbody>
+          
+        </table>
+        <!-- <div class="table-pagination">
+          <div class="flex items-center justify-between">
+            <div class="buttons">
+              <button type="button" class="button active">1</button>
+              <button type="button" class="button">2</button>
+              <button type="button" class="button">3</button>
+            </div>
+            <small>Page 1 of 3</small>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </section>
+
+  <%- include("./partials/footer.ejs") %>
+
+</div>
+
+<!-- Scripts below are for demo only -->
+
+</body>
+</html>

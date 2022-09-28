@@ -37,5 +37,48 @@ exports.checkToken = async(req, res, next) =>{
         resp["message"] = "Auth token is not supplied";
         return res.status(400).json(resp);
     }
-}
+};
 
+
+
+exports.checkAdminToken = async(req, res, next) =>{
+    let resp  = {};
+    console.log("req.cookies.....",req.cookies);
+    let token = req.cookies.jwt;
+    if (token) {
+        if (token.startsWith('Bearer')) {
+            // Remove Bearer from string
+            token = token.slice(7, token.length);
+        }
+        jwToken.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+            if (err) {
+                resp["success"] = 401;  //  Missing or Incorrect Token
+                resp["message"] = "Token is not valid";
+                return res.status(400).json(resp);
+            } else {
+                let admin = db.get().collection('admins').findOne({_id  : ObjectID(decoded._id).valueOf()})
+                .then(user => {
+                    if(user){
+                        console.log("decoded....",decoded);
+                        req.decoded = decoded;
+                        req.userData = user;
+                        next();
+                    }else{
+                        resp["success"] = 400;  //  Missing or Incorrect Token
+                        resp["message"] = "Admin is not active or does not exist.";
+
+                        res.render('login', { resp : resp});
+
+                        //return res.status(400).json(resp);
+                    }
+                });
+            }
+        });
+    } else {
+        resp["success"] = 200;  //  Missing or Incorrect Token
+        resp["message"] = "Admin is not active or does not exist.";
+
+        res.render('login', { resp : resp});
+        //return res.status(400).json(resp);
+    }
+};
