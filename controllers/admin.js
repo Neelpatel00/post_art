@@ -96,19 +96,19 @@ exports.login = async (req, res) =>{
             { returnOriginal: true }
         ).then(async(updated_user) => {
 
-            let users = await db.get().collection("users").find().sort({ createdAt: -1 }).toArray();
+            // let users = await db.get().collection("users").find().sort({ createdAt: -1 }).toArray();
 
-            let images = await db.get().collection("images").find().sort({ createdAt: -1 }).toArray();
+            // let images = await db.get().collection("images").find().sort({ createdAt: -1 }).toArray();
             
 
             resp["success"] = 200;
             resp["message"] = "Login Successfull.";
             resp["jwt_token"] = token;
-            resp["users"] = users;
-            resp["images"] = images;
-            res.cookie('jwt',token, {httpOnly : true, maxAge : 60 * 60 * 24 * 30})
+            // resp["users"] = users;
+            // resp["images"] = images;
+            res.cookie('jwt',token, {httpOnly : true, maxAge : 60 * 60 * 24 * 300})
             //res.cookie('resp',JSON.stringify(resp), {httpOnly : true, maxAge : 60 * 60 * 24 * 30})
-            return res.render('index', { resp: resp });
+            return res.redirect('/');
             
         }).catch(err => {
             console.log("error....",err);
@@ -165,11 +165,58 @@ exports.addImage = async (req, res) => {
     if(req.body.image_date){
         image["image_date"] = req.body.image_date ? req.body.image_date.trim() : "";
     }
-    image["createdAt"] = new Date();
-    db.get().collection("images").insertOne(image).then(result => {
+
+    if (req.params.id == undefined) {
+        image["createdAt"] = new Date();
+        db.get().collection("images").insertOne(image).then(result => {
+
+            resp["success"] = 200;
+            resp["message"] = "Image successfully added.";
+            return res.redirect('/admin/getall/image');
+        }).catch(err => {
+            console.log("error....", err);
+            resp["success"] = 500;
+            resp["message"] = "Something went wrong.";
+
+            return res.redirect('/');
+
+        });
+    }
+    else{
+        image["updatedAt"] = new Date();
+        db.get().collection("images").findOneAndUpdate(
+            { _id: ObjectID(req.params.id).valueOf()},
+            {
+                $set:image
+            },
+            { returnOriginal: true }
+
+        ).then(result => {
+
+            resp["success"] = 200;
+            resp["message"] = "Image successfully updated.";
+            return res.redirect('/admin/getall/image');
+        }).catch(err => {
+            console.log("error....", err);
+            resp["success"] = 500;
+            resp["message"] = "Something went wrong.";
+
+            return res.redirect('/');
+
+        });
+    }
+    
+};
+
+exports.deleteImage = async (req, res) => {
+    let resp = {};
+
+    db.get().collection("images").deleteOne(
+        { _id: ObjectID(req.params.id).valueOf()},
+    ).then(result => {
 
         resp["success"] = 200;
-        resp["message"] = "Image successfully added.";
+        resp["message"] = "Image successfully deleted.";
         return res.redirect('/admin/getall/image');
     }).catch(err => {
         console.log("error....", err);
@@ -179,6 +226,7 @@ exports.addImage = async (req, res) => {
         return res.redirect('/');
 
     });
+    
 }
 
 exports.addCat = async(req, res) => {
@@ -222,33 +270,9 @@ exports.getAll = async(req, res) => {
     let resp = {};
 
     if(req.params.type == "image"){
-        db.get().collection("images").find().toArray().then(result => {
-            resp["success"] = 200;
-            resp["images"] = result;
-
-            return res.render('images', { resp : resp})
-        }).catch(err => {
-            console.log("error....", err);
-            resp["success"] = 500;
-            resp["message"] = "Something went wrong.";
-    
-            return res.status(200).json(resp);
-    
-        });
+        return res.redirect('/images');
     }
     else{
-        db.get().collection("category").find().toArray().then(result => {
-            resp["success"] = 200;
-            resp["cat"] = result;
-
-            return res.render('allcat', { resp : resp})
-        }).catch(err => {
-            console.log("error....", err);
-            resp["success"] = 500;
-            resp["message"] = "Something went wrong.";
-    
-            return res.status(200).json(resp);
-    
-        });
+        return res.redirect('/cat');
     }
 }

@@ -1,0 +1,131 @@
+<body>
+    <%- include("./partials/head.ejs") %>
+  <div id="app">
+  
+    <%- include("./partials/navbar.ejs") %>
+  
+    <%- include("./partials/aside.ejs") %>
+  
+    <section class="section main-section">
+      <div class="card mb-6">
+        <header class="card-header">
+          <p class="card-header-title">
+            <span class="icon"><i class="mdi mdi-ballot"></i></span>
+            Edit Images
+          </p>
+        </header>
+        <div class="card-content">
+          <form action="/admin/editimage/<%= image.image._id %>" method="post">
+            <div class="field">
+              <label class="label">Festival Name</label>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control icons-left">
+                    <input class="input" type="text" placeholder="Festival Name" name="fst_name" value="<%= image.image.festival_name %>">
+                    <!-- <span class="icon left"><i class="mdi mdi-account"></i></span> -->
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label">Image Url</label>
+                  <div class="control">
+                    <input class="input" type="text" placeholder="Image Url" name="image_url" value="<%= image.image.image_url %>">
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label">Choose Color</label>
+                  <div class="control icons-left icons-right">
+                    <input class="input" type="text" placeholder="Choose Color" name="text_color" style="width: 50%;" value="<%= image.image.text_color %>">
+                    <!-- <span class="icon left"><i class="mdi mdi-mail"></i></span>
+                    <span class="icon right"><i class="mdi mdi-check"></i></span> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-body">
+                <div class="field">
+                  <label class="label">Add Resolution</label>
+                  <div class="field addons">
+                    <div class="control expanded">
+                      <input class="input" type="text" name="reso" placeholder="Add Resolution" value="<%= image.image.resolution %>">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Select Category</label>
+              <div class="control">
+                <div class="select">
+                  <select name="cat_id" value="<%= image.image.cat_id %>">
+                    <% for(var i=0; i<image.cat.length; i++) { %>
+                        <% if (image.cat[i]._id == image.image.cat_id) { %>
+                            <option value="<%= image.cat[i]._id %>" selected><%= image.cat[i].cat_name %></option>
+                        <% } 
+                        else { %>
+                            <option value="<%= image.cat[i]._id %>" selected><%= image.cat[i].cat_name %></option>
+                        <% } %>
+                    
+                    <% } %> 
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Image Visibility</label>
+              <div class="control">
+                <div class="select">
+                  <select name="image_visibility" value="<%= image.image.image_visibility %>">
+                    <option value="1">True</option>
+                    <option value="0">False</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Enter Amount</label>
+              <div class="control">
+                <input class="input" type="text" name="amount" placeholder="Enter Amount" value="<%= image.image.amount %>">
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Default Frames</label>
+              <div class="control">
+                <input class="input" type="text" name="frames" placeholder="Default Frames" value="<%= image.image.default_frames %>">
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Year</label>
+              <div class="control">
+                <input class="input" type="text" name="year" placeholder="Enter Year" value="<%= image.image.year %>">
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Image Date</label>
+              <div class="control">
+                <input class="input" type="date" name="image_date" placeholder="Image Date" value="<%= image.image.image_date %>">
+              </div>
+            </div>
+            <div class="field grouped">
+              <div class="control">
+                <button type="submit" class="button green">
+                  Submit
+                </button>
+              </div>
+              <div class="control">
+                <button type="reset" class="button red">
+                  Reset
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  
+    <%- include("./partials/footer.ejs") %>
+  </div>
+  
+  </body>
+  </html>
+  

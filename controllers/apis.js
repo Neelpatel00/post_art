@@ -306,9 +306,17 @@ exports.AddMoney = async (req, res) => {
     let resp = {};
     let user_id = ObjectID(req.decoded._id).valueOf();
     console.log("wallet...",req.userData.wallet);
+    let amt = 0;
+
+    if(req.body.ads_type == "common"){
+        amt = 1;
+    }
+    else{
+        amt = 5;
+    }
 
     if(req.body.type == "ads"){
-        let amount = parseInt(req.userData.wallet) + 5;
+        let amount = parseInt(req.userData.wallet) + amt;
 
         db.get().collection("users").findOneAndUpdate(
             {_id:user_id},
@@ -342,6 +350,9 @@ exports.getImages = async (req, res) => {
     let resp = {};
 
     db.get().collection("images").find().toArray().then((result) => {
+        for(let i=0; i<result.length; i++){
+            result[i].image_url = `https://gitlab.com/ayurvedchikitsamd/post_art_one/-/raw/main/${result[i].image_url}`
+        }
         resp["success"] = 200;
         resp["message"] = "Successfull.";
         resp["data"] = result;
@@ -355,4 +366,52 @@ exports.getImages = async (req, res) => {
         return res.status(200).json(resp);
 
     });
+}
+
+exports.Pay = async (req, res) => {
+    let resp = {};
+    let user_id = ObjectID(req.decoded._id).valueOf();
+    console.log("wallet...",req.userData.wallet);
+    let amt = parseInt(req.body.amount);
+
+
+    let amount = parseInt(req.userData.wallet);
+
+    if(amount > 0){
+        amount = amount - amt;
+
+        db.get().collection("users").findOneAndUpdate(
+            {_id:user_id},
+            {
+                $set:{
+                    wallet:amount,
+                    updatedAt: new Date(),
+                }
+            },
+            { returnOriginal: true }
+            ).then( result => {
+            resp["success"] = 200;
+            resp["message"] = "Successfully payed.";
+            result.value.wallet = amount
+            resp["data"] = result.value;
+    
+            return res.status(200).json(resp);
+        }).catch(err => {
+            console.log("error....",err);
+            resp["success"] = 500;
+            resp["message"] = "Something went wrong.";
+    
+            return res.status(200).json(resp);
+    
+        });
+    }
+    else{
+        console.log("error....", err);
+        resp["success"] = 500;
+        resp["message"] = "Wallet is empty, please earne money!";
+
+        return res.status(200).json(resp);
+    }
+
+        
 }
