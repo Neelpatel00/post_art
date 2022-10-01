@@ -349,7 +349,14 @@ exports.AddMoney = async (req, res) => {
 exports.getImages = async (req, res) => {
     let resp = {};
 
-    db.get().collection("images").find().toArray().then((result) => {
+    let pageno = req.body.pageno ? req.body.pageno : 1;
+    let limit = 10;
+    let offset = (pageno - 1) * limit;
+
+    db.get().collection("images").find()
+    .limit(limit)
+    .skip(offset)
+    .toArray().then((result) => {
         for(let i=0; i<result.length; i++){
             result[i].image_url = `https://gitlab.com/ayurvedchikitsamd/post_art_one/-/raw/main/${result[i].image_url}`
         }

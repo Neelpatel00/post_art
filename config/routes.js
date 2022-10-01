@@ -97,7 +97,7 @@ router.put('/edit',middleware.checkToken,apis.register);
 router.post('/check_code',middleware.checkToken,apis.check_cupanCode);
 router.get('/userprofile',middleware.checkToken,apis.UserProfile);
 router.post('/addmoney',middleware.checkToken,apis.AddMoney);
-router.get('/allimages',middleware.checkToken,apis.getImages);
+router.post('/allimages',middleware.checkToken,apis.getImages);
 router.post('/pay',middleware.checkToken,apis.Pay);
 
 const admin = require('../controllers/admin');
