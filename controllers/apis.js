@@ -353,15 +353,20 @@ exports.getImages = async (req, res) => {
     let limit = 10;
     let offset = (pageno - 1) * limit;
 
+    let count = await db.get().collection("images").find().toArray();
+    
     db.get().collection("images").find()
     .limit(limit)
     .skip(offset)
     .toArray().then((result) => {
+        console.log("result.length : ",result.length);
         for(let i=0; i<result.length; i++){
             result[i].image_url = `https://gitlab.com/ayurvedchikitsamd/post_art_one/-/raw/main/${result[i].image_url}`
         }
         resp["success"] = 200;
         resp["message"] = "Successfull.";
+        resp["count"] = count.length;
+        resp["pages"] = Math.abs(Math.ceil(count.length/limit));
         resp["data"] = result;
 
         return res.status(200).json(resp);
