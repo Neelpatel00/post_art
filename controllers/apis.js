@@ -349,7 +349,7 @@ exports.AddMoney = async (req, res) => {
 exports.getImages = async (req, res) => {
     let resp = {};
 
-    let pageno = req.body.pageno ? req.body.pageno : 1;
+    let pageno = (req.body.pageno && req.body.pageno != 0) ? req.body.pageno : 1;
     let limit = 10;
     let offset = (pageno - 1) * limit;
 
