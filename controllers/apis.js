@@ -3,6 +3,10 @@ const db = require('../config/db');
 const { Validator } = require('node-input-validator');
 let ObjectID = require('mongodb').ObjectId;
 
+var options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+let today_date = new Date();
+today_date = today_date.toLocaleDateString("en-In", options);
+let ads_count = 5;
 
 exports.register = async (req, res) => {
     var voucher_codes = require('voucher-code-generator');
@@ -101,6 +105,8 @@ exports.register = async (req, res) => {
                         resp["jwt_token"] = token;
                         updated_user.value.jwt_token = token;
                         resp["data"] = updated_user.value;
+                        resp["today_date"] = today_date;
+                        resp["ads_views"] = ads_count;
 
                         return res.status(200).json(resp);
                     })
@@ -132,6 +138,8 @@ exports.register = async (req, res) => {
                 resp["success"] = 200;
                 resp["message"] = "Update Successfull.";
                 resp["data"] = user;
+                resp["today_date"] = today_date;
+                resp["ads_views"] = ads_count;
 
                 return res.status(200).json(resp);
             })
@@ -197,6 +205,8 @@ exports.login = async (req, res) =>{
             updated_user.value.fcm_token = fcm_token;
             updated_user.value.device_id = device_id;
             resp["data"] = updated_user.value;
+            resp["today_date"] = today_date;
+            resp["ads_views"] = ads_count;
 
             return res.status(200).json(resp);
         }).catch(err => {
@@ -258,6 +268,8 @@ exports.check_cupanCode = async (req, res) => {
                 resp["success"] = 200;
                 resp["message"] = "success.";
                 resp["data"] = user;
+                resp["today_date"] = today_date;
+                resp["ads_views"] = ads_count;
 
                 return res.status(200).json(resp);
             })
@@ -287,9 +299,12 @@ exports.UserProfile = async (req, res) => {
     let user_id = ObjectID(req.decoded._id).valueOf();
 
     db.get().collection("users").findOne({_id:user_id}).then( result => {
+        
         resp["success"] = 200;
         resp["message"] = "Successfull.";
         resp["data"] = result;
+        resp["today_date"] = today_date;
+        resp["ads_views"] = ads_count;
 
         return res.status(200).json(resp);
     }).catch(err => {
@@ -332,6 +347,8 @@ exports.AddMoney = async (req, res) => {
             resp["message"] = "Successfully Earned.";
             result.value.wallet = amount
             resp["data"] = result.value;
+            resp["today_date"] = today_date;
+            resp["ads_views"] = ads_count;
     
             return res.status(200).json(resp);
         }).catch(err => {
@@ -368,6 +385,8 @@ exports.getImages = async (req, res) => {
         resp["count"] = count.length;
         resp["pages"] = Math.abs(Math.ceil(count.length/limit));
         resp["data"] = result;
+        resp["today_date"] = today_date;
+        resp["ads_views"] = ads_count;
 
         return res.status(200).json(resp);
     }).catch(err => {
@@ -406,6 +425,8 @@ exports.Pay = async (req, res) => {
             resp["message"] = "Successfully payed.";
             result.value.wallet = amount
             resp["data"] = result.value;
+            resp["today_date"] = today_date;
+            resp["ads_views"] = ads_count;
     
             return res.status(200).json(resp);
         }).catch(err => {
