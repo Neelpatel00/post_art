@@ -2,7 +2,8 @@ let jwToken = require('jsonwebtoken');
 const db = require('../config/db');
 const { Validator } = require('node-input-validator');
 let ObjectID = require('mongodb').ObjectId;
-
+const path = require('path');
+const fs = require('fs');
 
 
 exports.register = async (req, res) =>{
@@ -148,7 +149,7 @@ exports.addImage = async (req, res) => {
         image["resolution"] = req.body.reso ? req.body.reso.trim() : "";
     }
     if(req.body.cat_id){
-        image["cat_id"] = req.body.cat_id ? req.body.cat_id.trim() : "";
+        image["cat_id"] = ObjectID(req.body.cat_id).valueOf();
     }
     if(req.body.image_visibility){
         image["image_visibility"] = req.body.image_visibility ? req.body.image_visibility.trim() : "";
@@ -275,4 +276,74 @@ exports.getAll = async(req, res) => {
     else{
         return res.redirect('/cat');
     }
+}
+
+exports.importCsv = async(req, res) => {
+    let resp = {}
+    console.log("hello");
+    try {
+        let arr = [];
+        console.log("req.file : ",req.file);
+        const csvFilePath = req.file.path;
+        const csv = require('csvtojson')
+        csv()
+            .fromFile(csvFilePath)
+            .then(async (data) => {
+                console.log("data.length : ",data.length);
+                for (let i = 0; i < data.length; i++) {
+                    let image = {};
+                    if (data[i]["festival_name"] == "" && data[i]["image_url"] == "" && data[i]["cat_name"] == "") {
+                        continue;
+                    }
+
+                    image["festival_name"] = data[i]["festival_name"] ? data[i]["festival_name"].trim() : "";
+
+                    image["image_url"] = data[i]["image_url"] ? data[i]["image_url"].trim() : "";
+                    image["text_color"] = data[i]["text_color"] ? data[i]["text_color"].trim() : "";
+                    image["resolution"] = data[i]["resolution"] ? data[i]["resolution"].trim() : "";
+                    image["image_visibility"] = data[i]["image_visibility"] ? data[i]["image_visibility"].trim() : "";
+                    image["amount"] = data[i]["amount"] ? data[i]["amount"].trim() : "";
+                    image["default_frames"] = data[i]["default_frames"] ? data[i]["default_frames"].trim() : "";
+                    image["year"] = data[i]["year"] ? data[i]["year"].trim() : "";
+                    image["image_date"] = data[i]["image_date"] ? data[i]["image_date"].trim() : "";
+
+                    if (data[i]["cat_name"] != "") {
+                        let cat = await db.get().collection("category").findOne({ cat_name: data[i]["cat_name"].trim() });
+                        if (cat) {
+                            image["cat_id"] = ObjectID(cat._id).valueOf();
+                        }
+                    }
+                    image["createdAt"] = new Date();
+                    db.get().collection("images").insertOne(image);
+
+                    arr.push(image);
+                }
+
+                fs.unlinkSync(req.file.path);
+                resp["success"] = 200;
+                resp["message"] = "successfull.";
+                resp["images"] = arr;
+
+                return res.redirect('/admin/getall/image');
+
+            })
+            .catch(err => {
+                console.log("error....", err);
+                resp["success"] = 500;
+                resp["message"] = "Something went wrong.";
+
+                return res.redirect('/');
+
+            });
+
+
+    }
+    catch (err) {
+        console.log("error....", err);
+        resp["success"] = 500;
+        resp["message"] = "Something went wrong.";
+
+        return res.redirect('/');
+    }
+
 }

@@ -5,6 +5,10 @@ const db = require('../config/db');
 const apis = require('../controllers/apis');
 const middleware = require('../config/middleware');
 
+const multer = require('multer');
+let maxSize = 11 * 1000 * 1000;
+let upload = multer({ dest: 'public/images/uploads' , limits: {fileSize: maxSize}});
+
 router.get('/', middleware.checkAdminToken,async(req, res) => {
     //res.send('Welcome!');
     let resp = {};
@@ -26,6 +30,10 @@ router.get('/addimage', middleware.checkAdminToken, async (req, res) => {
 router.get('/addcat', middleware.checkAdminToken,(req, res) => {
     //res.send('Welcome!');
     res.render('cat');
+});
+router.get('/import', middleware.checkAdminToken,(req, res) => {
+    //res.send('Welcome!');
+    res.render('import');
 });
 router.get('/login',(req, res) => {
     //res.send('Welcome!');
@@ -99,6 +107,7 @@ router.get('/userprofile',middleware.checkToken,apis.UserProfile);
 router.post('/addmoney',middleware.checkToken,apis.AddMoney);
 router.post('/allimages',middleware.checkToken,apis.getImages);
 router.post('/pay',middleware.checkToken,apis.Pay);
+router.delete('/deleteuser',middleware.checkToken,apis.deleteUser);
 
 const admin = require('../controllers/admin');
 const { ObjectID } = require('bson');
@@ -112,6 +121,6 @@ router.get('/admin/deleteimg/:id', middleware.checkAdminToken,admin.deleteImage)
 router.post('/admin/addcat', middleware.checkAdminToken,admin.addCat);
 router.get('/admin/getall/:type', middleware.checkAdminToken,admin.getAll);
 
-
+router.post('/admin/importcsv', middleware.checkAdminToken, upload.single('csv_data'),admin.importCsv);
 
 module.exports = router;

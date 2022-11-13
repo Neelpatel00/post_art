@@ -1,0 +1,58 @@
+<body>
+    <%- include("./partials/head.ejs") %>
+  <div id="app">
+  
+    <%- include("./partials/navbar.ejs") %>
+  
+    <%- include("./partials/aside.ejs") %>
+  
+    <section class="section main-section">
+      <div class="card mb-6">
+        <header class="card-header">
+          <p class="card-header-title">
+            <span class="icon"><i class="mdi mdi-ballot"></i></span>
+            Import Images
+          </p>
+        </header>
+        <div class="card-content">
+          <form action="/admin/importcsv" method="post" enctype="multipart/form-data">
+            <div class="field">
+              <label class="label">Import Csv File</label>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control icons-left">
+                    <input class="input" type="file" name="csv_data">
+                    <span class="icon left widget-icon text-green-500"><i class="mdi mdi-file-upload"></i></span>
+                  </div>
+                </div>
+                <!-- <div class="field">
+                  <label class="label">Image Url</label>
+                  <div class="control">
+                    <input class="input" type="text" placeholder="Image Url" name="image_url">
+                  </div>
+                </div> -->
+              </div>
+            </div>
+            <div class="field grouped">
+              <div class="control">
+                <button type="submit" class="button green">
+                  Submit
+                </button>
+              </div>
+              <div class="control">
+                <button type="reset" class="button red">
+                  Reset
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  
+    <%- include("./partials/footer.ejs") %>
+  </div>
+  
+  </body>
+  </html>
+  

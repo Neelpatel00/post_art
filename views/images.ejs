@@ -182,7 +182,7 @@ button:active {
                   <p class="description"><span style="text-transform:lowercase; color: black;">resolution : </span><%= resp.images[i].resolution %></p>
                   <p class="description"><span style="text-transform:lowercase; color: black;">visibility : </span><%= resp.images[i].image_visibility %></p>
                   <label> Year : <i class="icon text-red-500 mdi mdi-calendar-heart"></i><%= resp.images[i].year %></label>
-                  <label>Date : <i class="icon text-green-500 mdi mdi-calendar-heart"></i><b style="font-size: 12px; display: inline-block;"><%= resp.images[i].image_date %></b></label>
+                  <label>Date : <i class="icon text-green-500 mdi mdi-calendar-heart"></i><b style="font-size: 12px; display: inline-block;"><%= new Date(resp.images[i].image_date).toDateString() %></b></label>
                   <button><a href="/edit/<%= resp.images[i]._id %> "><span class="icon" style="color: green;"><i class="mdi mdi-image-edit"></i></span></a> <a href="/admin/deleteimg/<%= resp.images[i]._id %> "><span class="icon" style="color: red;"><i class="mdi mdi-trash-can"></i></span></a></button>
                 </div>
               </div>
