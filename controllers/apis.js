@@ -370,9 +370,9 @@ exports.getImages = async (req, res) => {
     let limit = 10;
     let offset = (pageno - 1) * limit;
 
-    let count = await db.get().collection("images").find().toArray();
+    let count = await db.get().collection("images").find({image_visibility : "1"}).toArray();
     
-    db.get().collection("images").find()
+    db.get().collection("images").find({image_visibility : "1"})
     .limit(limit)
     .skip(offset)
     .toArray().then((result) => {
@@ -380,11 +380,18 @@ exports.getImages = async (req, res) => {
         for(let i=0; i<result.length; i++){
             result[i].image_url = `https://gitlab.com/ayurvedchikitsamd/post_art_one/-/raw/main/${result[i].image_url}`
         }
-        resp["success"] = 200;
-        resp["message"] = "Successfull.";
-        resp["count"] = count.length;
-        resp["pages"] = Math.abs(Math.ceil(count.length/limit));
-        resp["data"] = result;
+        if (result.length > 0) {
+            resp["success"] = 200;
+            resp["message"] = "Successfull.";
+            resp["count"] = count.length;
+            resp["pages"] = Math.abs(Math.ceil(count.length / limit));
+            resp["data"] = result;
+
+        }
+        else{
+            resp["success"] = 500;
+            resp["message"] = "Next Festivals's Images Will Comming Soon.";
+        }
         resp["today_date"] = today_date;
         resp["ads_views"] = ads_count;
 
