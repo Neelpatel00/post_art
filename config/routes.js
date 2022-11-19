@@ -108,6 +108,7 @@ router.post('/addmoney',middleware.checkToken,apis.AddMoney);
 router.post('/allimages',middleware.checkToken,apis.getImages);
 router.post('/pay',middleware.checkToken,apis.Pay);
 router.delete('/deleteuser',middleware.checkToken,apis.deleteUser);
+router.get('/logout',middleware.checkToken,apis.Logout);
 
 const admin = require('../controllers/admin');
 const { ObjectID } = require('bson');

@@ -476,3 +476,23 @@ exports.deleteUser = async (req, res) => {
 
     });
 };
+
+exports.Logout = async (req, res) => {
+    let resp = {};
+    let user_id = ObjectID(req.decoded._id).valueOf();
+
+    db.get().collection("users").findOne({_id:user_id}).then( result => {
+        
+        resp["success"] = 200;
+        resp["message"] = "Logout Successfull.";
+
+        return res.status(200).json(resp);
+    }).catch(err => {
+        console.log("error....",err);
+        resp["success"] = 500;
+        resp["message"] = "Something went wrong.";
+
+        return res.status(200).json(resp);
+
+    });
+};
