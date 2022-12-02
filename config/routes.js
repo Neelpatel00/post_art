@@ -106,6 +106,7 @@ router.post('/check_code',middleware.checkToken,apis.check_cupanCode);
 router.get('/userprofile',middleware.checkToken,apis.UserProfile);
 router.post('/addmoney',middleware.checkToken,apis.AddMoney);
 router.post('/allimages',middleware.checkToken,apis.getImages);
+router.post('/v2/allimages',apis.getImages);
 router.post('/pay',middleware.checkToken,apis.Pay);
 router.delete('/deleteuser',middleware.checkToken,apis.deleteUser);
 router.get('/logout',middleware.checkToken,apis.Logout);
