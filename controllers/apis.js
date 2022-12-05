@@ -327,7 +327,7 @@ exports.AddMoney = async (req, res) => {
         amt = 1;
     }
     else{
-        amt = 5;
+        amt = 3;
     }
 
     if(req.body.type == "ads"){
