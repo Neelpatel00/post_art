@@ -1,164 +1,37 @@
 <%- include("./partials/head.ejs") %>
- <style>
+<style>
+  .pagination {
+    display: inline-block;
+    color: black;
 
-* {
-  padding: 0;
-  margin: 0;
-  position: relative;
-  box-sizing: border-box;
-}
-
-.listing-section, .cart-section {
-  width: 100%;
-  float: left;
-  padding: 1%;
-  border-bottom: 0.01em solid #dddbdb;
-}
-
-.product {
-  float: left;
-  width: 23%;
-  border-radius: 2%;
-  margin: 1%;
-}
-
-.product:hover {
-  box-shadow: 1.5px 1.5px 2.5px 3px rgba(0, 0, 0, 0.4);
-  -webkit-box-shadow: 1.5px 1.5px 2.5px 3px rgba(0, 0, 0, 0.4);  
-  -moz-box-shadow:    1.5px 1.5px 2.5px 3px rgba(0, 0, 0, 0.4);
-}
-
-.image-box {
-  width: 100%;
-  overflow: hidden;
-  border-radius: 2% 2% 0 0;
-}
-
-.images {
-  height: 20em;
-  width: 100%;
-  background-size: cover; 
-  background-position: center center; 
-  background-repeat: no-repeat;
-  border-radius: 2% 2% 0 0;
-  transition: all 1s ease;
-  -moz-transition: all 1s ease;
-  -ms-transition: all 1s ease;
-  -webkit-transition: all 1s ease;
-  -o-transition: all 1s ease;
-}
-
-.images:hover {
-  transform: scale(1.2);
-  overflow: hidden;
-  border-radius: 2%;
-}
-
-.text-box {
-  width: 100%;
-  float: left;
-  border: 0.01em solid #dddbdb;
-  border-radius: 0 0 2% 2%;
-  padding: 0.5em;
-}
-
-h2, h3 {
-  float: left;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
-  font-size: 1em;
-  text-transform: uppercase;
-  margin: 0.2em auto;
-}
-
-.item, .price {
-  /* clear: left; */
-  width: 100%;
-  text-align: left;
-}
-
-.price {
-  color: Grey;
-}
-
-.description, label, button, input {
-  float: left;
-  clear: left;
-  width: 100%;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 300;
-  font-size: 1em;
-  text-align: left;
-  margin: 0.2em auto;
-}
-
-input:focus {
-  outline-color: #fdf;
-}
-
-label {
-  width: 60%;
-}
-
-
-.text-box button {
-  margin-top: 1em;
-}
-
-button {
-  padding: 2%;
-  background-color: #dfd;
-  border: none;
-  border-radius: 2%;
-  display: flex;
-  justify-content: space-around;
-}
-
-button:hover {
-  bottom: 0.1em;
-}
-
-button:focus {
-  outline: 0;
-}
-
-button:active {
-  bottom: 0;
-  background-color: #fdf;
-}
-
-
-.remove {
-  width: 10%;
-  margin: 1px;
-  float: right;
-  clear: right;
-}
-
-
-
-@media(max-width:800px){
-  *{
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-      }
-  h2{
-    font-size: 0.6em;
-    font-weight: 100;
-    left: -10px;
   }
-  .product {
-    width: 40%;
-    margin: 15px;
-  }
-  .images {
-    height: 12em;
-    width: 100%;
-  }
+  .center {
+  text-align: center;
 }
-
- </style>
+a{
+  color: black;
+}
+  
+  .pagination li {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .pagination li.active {
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .pagination li:hover:not(.active) {
+    background-color: #ddd;
+    border-radius: 5px;
+  }
+  </style>
 
   <body>
 
@@ -169,42 +42,135 @@ button:active {
         <%- include("./partials/aside.ejs") %>
 
           <section class="section main-section">
+            <form action="/admin/editallcat" method="post">
+              <input  type="text" name="new_v" placeholder="enter new value" required />
+              <input type="text" name="old_v" placeholder="enter old value" required />
+              <input class="mdi button green" type="submit">
+            </form>
+            <section class="section main-section">
+              
+              <section class="ftco-section">
+                
+                <div class="container">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <h1 style="font-size: 2em;">Images</h1>
+                      <div class="table-wrap">
+                        <table class="table">
+                          <thead class="thead-primary">
+                            <tr>
+                              <th><span class="icon widget-icon text-blue-500"><i
+                                    class="mdi mdi-check-all mdi-36px"></i></span></th>
+                              <th><span class="icon widget-icon text-blue-500"><i
+                                    class="mdi mdi-image mdi-48px"></i></span></th>
+                              <th>Festival Name</th>
+                              <th>Price</th>
+                              <th>visibility</th>
+                              <th>Year</th>
+                              <th>Date</th>
+                              <th><span class="icon widget-icon text-blue-500"><i
+                                    class="mdi mdi-image-edit mdi-48px"></i></span></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <% for(var i=0; i<resp.images.length; i++) { %>
+                              <tr class="alert" role="alert">
+                                <td>
+                                  <label class="checkbox-wrap checkbox-primary">
+                                    <input type="checkbox">
+                                    <span class="checkmark"></span>
+                                  </label>
+                                </td>
+                                <td>
+                                  <img class="images"
+                                    src="https://gitlab.com/ayurvedchikitsamd/post_art_one/-/raw/main/<%= resp.images[i].image_url %>"
+                                    alt="" />
+                                </td>
+                                <td>
+                                  <div class="email">
+                                    <span style="font-size: 2em;">
+                                      <%= resp.images[i].festival_name %>
+                                    </span>
 
-            <div class="listing-section">
-              <% for(var i=0; i<resp.images.length; i++) { %>
-              <div class="product">
-                <div class="image-box">
-                  <img class="images" src="https://gitlab.com/ayurvedchikitsamd/post_art_one/-/raw/main/<%= resp.images[i].image_url %>" alt="" />
-                </div>
-                <div class="text-box">
-                  <h2 class="item"><span style="text-transform:lowercase;">festival : </span><%= resp.images[i].festival_name %></h2>
-                  <h3 class="price"><span style="text-transform:lowercase; color: black;">Amount : </span><i class="mdi mdi-currency-inr"></i><%= resp.images[i].amount %></h3>
-                  <p class="description"><span style="text-transform:lowercase; color: black;">resolution : </span><%= resp.images[i].resolution %></p>
-                  <p class="description"><span style="text-transform:lowercase; color: black;">visibility : </span><%= resp.images[i].image_visibility %></p>
-                  <label> Year : <i class="icon text-red-500 mdi mdi-calendar-heart"></i><%= resp.images[i].year %></label>
-                  <label>Date : <i class="icon text-green-500 mdi mdi-calendar-heart"></i><b style="font-size: 12px; display: inline-block;"><%= new Date(resp.images[i].image_date).toDateString() %></b></label>
-                  <button><a href="/edit/<%= resp.images[i]._id %> "><span class="icon" style="color: green;"><i class="mdi mdi-image-edit"></i></span></a> <a href="/admin/deleteimg/<%= resp.images[i]._id %> "><span class="icon" style="color: red;"><i class="mdi mdi-trash-can"></i></span></a></button>
-                </div>
-              </div>
-              <% } %>
-            </div>
-            
+                                  </div>
+                                </td>
+                                <td><span style="font-size: 1.5em;"><i class="mdi mdi-currency-inr"></i>
+                                    <%= resp.images[i].amount %>
+                                  </span></td>
+                                <td class="quantity">
+                                  <span style="font-size: 1.5em;">
+                                    <%= resp.images[i].image_visibility %>
+                                  </span>
+                                </td>
+                                <td><i class="icon text-red-500 mdi mdi-calendar-heart"></i>
+                                  <%= resp.images[i].year %>
+                                </td>
+                                <td><i class="icon text-green-500 mdi mdi-calendar-heart"></i><b
+                                    style="font-size: 12px; display: inline-block;">
+                                    <%= new Date(resp.images[i].image_date).toDateString() %>
+                                  </b></td>
+                                <td>
+                                  <button><a href="/edit/<%= resp.images[i]._id %> "><span class="icon"
+                                        style="color: green;"><i class="mdi mdi-image-edit mdi-24px"></i></span></a> <a
+                                      href="/admin/deleteimg/<%= resp.images[i]._id %> "><span class="icon"
+                                        style="color: red;"><i
+                                          class="mdi mdi-trash-can mdi-24px"></i></span></a></button>
+                                </td>
+                              </tr>
+                              <% } %>
 
+                          </tbody>
+                        </table>
+                        <div class="center">
+                          <ul class="pagination">
+                            <% if (resp.current_page == 1) { %>
+                                <li class="disabled"><a>First</a></li>
+                            <% } else { %>
+                                <li><a href="/admin/getall/image/1">First</a></li>
+                            <% } %>
+                            <% var i = (Number(resp.current_page) > 5 ? Number(resp.current_page) - 4 : 1) %>
+                            <% if (i !== 1) { %>
+                                <li class="disabled"><a>...</a></li>
+                            <% } %>
+                            <% for (; i <= (Number(resp.current_page) + 4) && i <= resp.pages; i++) { %>
+                                <% if (i == resp.current_page) { %>
+                                    <li class="active"><a><%= i %></a></li>
+                                <% } else { %>
+                                    <li><a href="/admin/getall/image/<%= i %>"><%= i %></a></li>
+                                <% } %>
+                                <% if (i == Number(resp.current_page) + 4 && i < resp.pages) { %>
+                                    <li class="disabled"><a>...</a></li>
+                                <% } %>
+                            <% } %>
+                            <% if (resp.current_page == resp.pages) { %>
+                                <li class="disabled"><a>Last</a></li>
+                            <% } else { %>
+                                <li><a href="/admin/getall/image/<%= resp.pages %>">Last</a></li>
+                            <% } %>
+                        </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+            </section>
           </section>
 
-          
+
 
     </div>
 
     <!-- Scripts below are for demo only -->
     <script type="text/javascript" src="js/main.min.js?v=1628755089081"></script>
-    
+
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
     <script type="text/javascript" src="js/chart.sample.min.js"></script>
-    
+
     <noscript><img height="1" width="1" style="display:none"
         src="https://www.facebook.com/tr?id=658339141622648&ev=PageView&noscript=1" /></noscript>
-    
+
     <!-- Icons below are for demo only. Feel free to use any icon pack. Docs: https://bulma.io/documentation/elements/icon/ -->
     <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
 

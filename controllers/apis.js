@@ -373,8 +373,8 @@ exports.getImages = async (req, res) => {
     let count = await db.get().collection("images").find({image_visibility : "1"}).toArray();
     
     db.get().collection("images").find({image_visibility : "1"})
-    .limit(limit)
     .skip(offset)
+    .limit(limit)
     .toArray().then((result) => {
         console.log("result.length : ",result.length);
         for(let i=0; i<result.length; i++){
@@ -404,6 +404,137 @@ exports.getImages = async (req, res) => {
         return res.status(200).json(resp);
 
     });
+}
+
+exports.getHome = async (req, res) => {
+    let resp = {};
+
+    try {
+        let main_cat = await db.get().collection("category").aggregate([
+            {
+                $match: { parent_category_id: null, visibility: "1" }
+            },
+            {
+                $lookup:
+                {
+                    from: 'category',
+                    localField: '_id',
+                    foreignField: 'parent_category_id',
+                    as: 'sub_cat',
+                    pipeline: [
+                        {
+                            $match: { visibility: "1" }
+                        },
+                    ]
+                }
+            }
+        ]).toArray();
+
+        let sub_cat = await db.get().collection("category").aggregate([
+            {
+                $match: { parent_category_id: { $ne: null }, visibility: "1"}
+            },
+            {
+                $lookup:
+                {
+                    from: 'images',
+                    localField: '_id',
+                    foreignField: 'subcat_id',
+                    as: 'images',
+                    pipeline: [
+                        {
+                            $match: { image_visibility: "1" }
+                        },
+                        // { $skip: offset },
+                        // { $limit: limit }
+                    ]
+                }
+            }
+        ]).sort({ date: 1 }).toArray()
+
+        for (let i = 0; i < sub_cat[0].images.length; i++) {
+            sub_cat[0].images[i].image_url = `https://gitlab.com/ayurvedchikitsamd/post_art_one/-/raw/main/${sub_cat[0].images[i].image_url}`
+        }
+        resp["success"] = 200;
+        resp["message"] = "Successfull.";
+        resp["data"] = { main_cat, sub_cat };
+        resp["today_date"] = today_date;
+        resp["ads_views"] = ads_count;
+
+        return res.status(200).json(resp);
+    }
+    catch (err) {
+        console.log("error....", err);
+        resp["success"] = 500;
+        resp["message"] = "Something went wrong.";
+
+        return res.status(200).json(resp);
+    }
+    
+}
+
+exports.getImageById = async (req, res) => {
+    
+    let resp = {};
+    try {
+        let pageno = (req.body.pageno && req.body.pageno != 0) ? req.body.pageno : 1;
+        let limit = 10;
+        let offset = (pageno - 1) * limit;
+
+        let subcat_id = ObjectID(req.body.subcat_id).valueOf();
+
+        let count = await db.get().collection("images").find({ subcat_id: subcat_id, image_visibility: "1" }).toArray();
+
+        let sub_cat = await db.get().collection("category").aggregate([
+            {
+                $match: { _id: subcat_id }
+            },
+            {
+                $lookup:
+                {
+                    from: 'images',
+                    localField: '_id',
+                    foreignField: 'subcat_id',
+                    as: 'images',
+                    pipeline: [
+                        {
+                            $match: { image_visibility: "1" }
+                        },
+                        { $skip: offset },
+                        { $limit: limit }
+                    ]
+                }
+            }
+        ]).sort({ date: 1 }).toArray()
+
+        for (let i = 0; i < sub_cat[0].images.length; i++) {
+            sub_cat[0].images[i].image_url = `https://gitlab.com/ayurvedchikitsamd/post_art_one/-/raw/main/${sub_cat[0].images[i].image_url}`
+        }
+        if (sub_cat[0].images.length > 0) {
+            resp["success"] = 200;
+            resp["message"] = "Successfull.";
+            resp["count"] = count.length;
+            resp["pages"] = Math.abs(Math.ceil(count.length / limit));
+            resp["data"] = sub_cat[0].images;
+
+        }
+        else {
+            resp["success"] = 500;
+            resp["message"] = "This Festivals's Images Will Comming Soon.";
+        }
+        resp["today_date"] = today_date;
+        resp["ads_views"] = ads_count;
+
+        return res.status(200).json(resp);
+    }
+    catch (err) {
+        console.log("error....", err);
+        resp["success"] = 500;
+        resp["message"] = "Something went wrong.";
+
+        return res.status(200).json(resp);
+    }
+    
 }
 
 exports.Pay = async (req, res) => {

@@ -63,7 +63,7 @@
                             <option value="<%= image.cat[i]._id %>" selected><%= image.cat[i].cat_name %></option>
                         <% } 
                         else { %>
-                            <option value="<%= image.cat[i]._id %>" selected><%= image.cat[i].cat_name %></option>
+                            <option value="<%= image.cat[i]._id %>"><%= image.cat[i].cat_name %></option>
                         <% } %>
                     
                     <% } %> 
@@ -72,12 +72,42 @@
               </div>
             </div>
             <div class="field">
+              <label class="label">Select Sub Category</label>
+              <div class="control">
+                <div class="select">
+                  <select name="subcat_id">
+                    <% if (image.image.subcat_id !=undefined) { %>
+                      <% for(var i=0; i<image.cat.length; i++) { %>
+                        <% if (image.cat[i]._id.toString()==image.image.subcat_id.toString()) { %>
+                          <option value="<%= image.cat[i]._id %>" selected> <%= image.cat[i].cat_name %></option>
+                        <% } else { %>
+                            <option value="<%= image.cat[i]._id %>"><%= image.cat[i].cat_name %></option>
+                        <% } %>
+                        <% } %>
+                        <% } else { %>
+                                <option  selected value> -- Select Sub Category -- </option>
+                                <% for(var i=0; i<image.cat.length; i++) { %>
+                                    <option value="<%= image.cat[i]._id %>"><%= image.cat[i].cat_name %></option>
+                                <% } %>
+                              <% } %>
+                  
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <div class="field">
               <label class="label">Image Visibility</label>
               <div class="control">
                 <div class="select">
-                  <select name="image_visibility" value="<%= image.image.image_visibility %>">
-                    <option value="1">True</option>
-                    <option value="0">False</option>
+                  <select name="image_visibility" value="<%= (image.image.image_visibility == 1) ? "True" : "False" %>">
+                    <% if (image.image.image_visibility == 1) { %>
+                        <option value="1">True</option>
+                        <option value="0">False</option>
+                    <% } else { %>
+                        <option value="0">False</option>
+                        <option value="1">True</option>
+                      <% } %>
                   </select>
                 </div>
               </div>
@@ -103,7 +133,11 @@
             <div class="field">
               <label class="label">Image Date</label>
               <div class="control">
-                <input class="input" type="date" name="image_date" placeholder="Image Date" value="<%= image.image.image_date %>">
+                <input class="input" type="date" id="date_id" name="image_date" placeholder="Image Date">
+                <script>
+                  let date = new Date("<%= image.image.image_date %>").toLocaleDateString("en-CA");
+                  document.getElementById("date_id").value = date;
+                  </script>
               </div>
             </div>
             <div class="field grouped">

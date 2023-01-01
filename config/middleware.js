@@ -44,7 +44,7 @@ exports.checkToken = async(req, res, next) =>{
 exports.checkAdminToken = async(req, res, next) =>{
     let resp  = {};
     console.log("req.cookies.....",req.cookies);
-    let token = req.cookies.jwt;
+    let token = req.cookies.jwt || req.headers['authorization'];;
     if (token) {
         if (token.startsWith('Bearer')) {
             // Remove Bearer from string

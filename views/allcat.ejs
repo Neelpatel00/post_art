@@ -1,164 +1,4 @@
 <%- include("./partials/head.ejs") %>
- <style>
-
-* {
-  padding: 0;
-  margin: 0;
-  position: relative;
-  box-sizing: border-box;
-}
-
-.listing-section, .cart-section {
-  width: 100%;
-  float: left;
-  padding: 1%;
-  border-bottom: 0.01em solid #dddbdb;
-}
-
-.product {
-  float: left;
-  width: 23%;
-  border-radius: 2%;
-  margin: 1%;
-}
-
-.product:hover {
-  box-shadow: 1.5px 1.5px 2.5px 3px rgba(0, 0, 0, 0.4);
-  -webkit-box-shadow: 1.5px 1.5px 2.5px 3px rgba(0, 0, 0, 0.4);  
-  -moz-box-shadow:    1.5px 1.5px 2.5px 3px rgba(0, 0, 0, 0.4);
-}
-
-.image-box {
-  width: 100%;
-  overflow: hidden;
-  border-radius: 2% 2% 0 0;
-}
-
-.images {
-  height: 20em;
-  width: 100%;
-  background-size: cover; 
-  background-position: center center; 
-  background-repeat: no-repeat;
-  border-radius: 2% 2% 0 0;
-  transition: all 1s ease;
-  -moz-transition: all 1s ease;
-  -ms-transition: all 1s ease;
-  -webkit-transition: all 1s ease;
-  -o-transition: all 1s ease;
-}
-
-.images:hover {
-  transform: scale(1.2);
-  overflow: hidden;
-  border-radius: 2%;
-}
-
-.text-box {
-  width: 100%;
-  float: left;
-  border: 0.01em solid #dddbdb;
-  border-radius: 0 0 2% 2%;
-  padding: 0.5em;
-}
-
-h2, h3 {
-  float: left;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
-  font-size: 1em;
-  text-transform: uppercase;
-  margin: 0.2em auto;
-}
-
-.item, .price {
-  /* clear: left; */
-  width: 100%;
-  text-align: left;
-}
-
-.price {
-  color: Grey;
-}
-
-.description, label, button, input {
-  float: left;
-  clear: left;
-  width: 100%;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 300;
-  font-size: 1em;
-  text-align: left;
-  margin: 0.2em auto;
-}
-
-input:focus {
-  outline-color: #fdf;
-}
-
-label {
-  width: 60%;
-}
-
-
-.text-box button {
-  margin-top: 1em;
-}
-
-button {
-  padding: 2%;
-  background-color: #dfd;
-  border: none;
-  border-radius: 2%;
-  display: flex;
-  justify-content: space-around;
-}
-
-button:hover {
-  bottom: 0.1em;
-}
-
-button:focus {
-  outline: 0;
-}
-
-button:active {
-  bottom: 0;
-  background-color: #fdf;
-}
-
-
-.remove {
-  width: 10%;
-  margin: 1px;
-  float: right;
-  clear: right;
-}
-
-
-
-@media(max-width:800px){
-  *{
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-      }
-  h2{
-    font-size: 0.6em;
-    font-weight: 100;
-    left: -10px;
-  }
-  .product {
-    width: 40%;
-    margin: 15px;
-  }
-  .images {
-    width: 100%;
-    height: 12em;
-  }
-}
-
- </style>
 
   <body>
 
@@ -170,37 +10,77 @@ button:active {
 
           <section class="section main-section">
 
-            <div class="listing-section">
-              <% for(var i=0; i<resp.cat.length; i++) { %>
-              <div class="product">
-                <div class="image-box">
-                  <img class="images" src="<%= resp.cat[i].image_url %>" alt="" />
+            <section class="section main-section">
+              <section class="ftco-section">
+                <div class="container">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <h1 style="font-size: 2em;">Category</h1>
+                      <div class="table-wrap">
+                        <table class="table">
+                          <thead class="thead-primary">
+                            <tr>
+
+                              <th><span class="icon widget-icon text-blue-500"><i
+                                    class="mdi mdi-image mdi-48px"></i></span></th>
+                              <th>Category Name</th>
+                              <th>Visibility</th>
+                              <!-- <th><span class="icon widget-icon text-blue-500"><i class="mdi mdi-image-edit mdi-48px"></i></span></th> -->
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <% for(var i=0; i<resp.cat.length; i++) { %>
+                              <tr class="alert" role="alert">
+                                <td>
+                                  <img class="images" src="<%= resp.cat[i].image_url %>" alt="" />
+                                </td>
+                                <td>
+                                  <div class="email">
+                                    <span style="font-size: 2em;">
+                                      <%= resp.cat[i].cat_name %>
+                                    </span>
+
+                                  </div>
+                                </td>
+                                <td><span style="font-size: 1.5em;">
+                                    <%= resp.cat[i].visibility %>
+                                  </span></td>
+                                <td>
+                                  <button>
+                                    <a href="/admin/subcat/<%= resp.cat[i]._id %> "><span class="icon" style="color: green;"><i class="mdi mdi-eye mdi-24px"></i></span></a>&nbsp;&nbsp;
+                                    <a href="/catedit/<%= resp.cat[i]._id %> "><span class="icon" style="color: green;"><i class="mdi mdi-image-edit mdi-24px"></i></span></a>
+                                    <a href="/admin/deletecat/<%= resp.cat[i]._id %> "><span class="icon" style="color: red;"><i class="mdi mdi-trash-can mdi-24px"></i></span></a>
+                                  </button>
+                                </td>
+                              </tr>
+                              <% } %>
+
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="text-box">
-                  <h2 class="item"><span style="text-transform:lowercase;">Category : </span><%= resp.cat[i].cat_name %></h2>
-                  <p class="description"><span style="text-transform:lowercase; color: black;">visibility : </span><%= resp.cat[i].visibility %></p>
-                  <!-- <button><a href="/"><span class="icon" style="color: red;"><i class="mdi mdi-trash-can"></i></span></a> <a href=""><span class="icon" style="color: red;"><i class="mdi mdi-trash-can"></i></span></a></button> -->
-                </div>
-              </div>
-              <% } %>
-            </div>
-            
+              </section>
+
+            </section>
+
 
           </section>
 
-          
+
 
     </div>
 
     <!-- Scripts below are for demo only -->
     <script type="text/javascript" src="js/main.min.js?v=1628755089081"></script>
-    
+
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
     <script type="text/javascript" src="js/chart.sample.min.js"></script>
-    
+
     <noscript><img height="1" width="1" style="display:none"
         src="https://www.facebook.com/tr?id=658339141622648&ev=PageView&noscript=1" /></noscript>
-    
+
     <!-- Icons below are for demo only. Feel free to use any icon pack. Docs: https://bulma.io/documentation/elements/icon/ -->
     <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
 

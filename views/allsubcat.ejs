@@ -1,0 +1,131 @@
+<%- include("./partials/head.ejs") %>
+
+  <body>
+
+    <div id="app">
+
+      <%- include("./partials/navbar.ejs") %>
+
+        <%- include("./partials/aside.ejs") %>
+
+          <section class="section main-section">
+            <div class="container">
+                <div class="row">
+                  <div class="col-md-12">
+                    <h1 style="font-size: 2em;">Category</h1>
+                    <div class="table-wrap">
+                      <table class="table">
+                        <thead class="thead-primary">
+                          <tr>
+
+                            <th><span class="icon widget-icon text-blue-500"><i
+                                  class="mdi mdi-image mdi-48px"></i></span></th>
+                            <th>Category Name</th>
+                            <th>Visibility</th>
+                            <!-- <th><span class="icon widget-icon text-blue-500"><i class="mdi mdi-image-edit mdi-48px"></i></span></th> -->
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% for(var i=0; i<cat.length; i++) { %>
+                            <tr class="alert" role="alert">
+                              <td>
+                                <img class="images" src="<%= cat[i].image_url %>" alt="" />
+                              </td>
+                              <td>
+                                <div class="email">
+                                  <span style="font-size: 2em;">
+                                    <%= cat[i].cat_name %>
+                                  </span>
+
+                                </div>
+                              </td>
+                              <td><span style="font-size: 1.5em;">
+                                  <%= cat[i].visibility %>
+                                </span></td>
+                              <td>
+                                <button>
+                                  <a href="/catedit/<%= cat[i]._id %> "><span class="icon" style="color: green;"><i class="mdi mdi-image-edit mdi-24px"></i></span></a>
+                                  <a href="/admin/deletecat/<%= cat[i]._id %> "><span class="icon" style="color: red;"><i class="mdi mdi-trash-can mdi-24px"></i></span></a>
+                                </button>
+                              </td>
+                            </tr>
+                            <% } %>
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <section class="section main-section">
+              <section class="ftco-section">
+                <div class="container">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <h1 style="font-size: 2em;">Sub Category</h1>
+                      <div class="table-wrap">
+                        <table class="table">
+                          <thead class="thead-primary">
+                            <tr>
+                              
+                              <th><span class="icon widget-icon text-blue-500"><i class="mdi mdi-image mdi-48px"></i></span></th>
+                              <th>Category Name</th>
+                              <th>Visibility</th>
+                              <!-- <th><span class="icon widget-icon text-blue-500"><i class="mdi mdi-image-edit mdi-48px"></i></span></th> -->
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <% for(var i=0; i<cat[0].sub_cat.length; i++) { %>
+                              <tr class="alert" role="alert">
+                                <td>
+                                  <img class="images" src="<%= cat[0].sub_cat[i].image_url %>" alt="" />
+                                </td>
+                                <td>
+                                  <div class="email">
+                                    <span style="font-size: 2em;"><%= cat[0].sub_cat[i].cat_name %></span>
+                                    
+                                  </div>
+                                </td>
+                                <td><span style="font-size: 1.5em;"><%= cat[0].sub_cat[i].visibility %></span></td>
+                                <td>
+                                  <button><a href="/catedit/<%= cat[0].sub_cat[i]._id %> "><span class="icon"
+                                        style="color: green;"><i class="mdi mdi-image-edit mdi-24px"></i></span></a> <a
+                                      href="/admin/deletecat/<%= cat[0].sub_cat[i]._id %> "><span class="icon"
+                                        style="color: red;"><i
+                                          class="mdi mdi-trash-can mdi-24px"></i></span></a></button>
+                                </td>
+                              </tr>
+                              <% } %>
+    
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+    
+              </section>
+              
+
+          </section>
+
+          
+
+    </div>
+
+    <!-- Scripts below are for demo only -->
+    <script type="text/javascript" src="js/main.min.js?v=1628755089081"></script>
+    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+    <script type="text/javascript" src="js/chart.sample.min.js"></script>
+    
+    <noscript><img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id=658339141622648&ev=PageView&noscript=1" /></noscript>
+    
+    <!-- Icons below are for demo only. Feel free to use any icon pack. Docs: https://bulma.io/documentation/elements/icon/ -->
+    <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
+
+  </body>
+
+  </html>

@@ -11,49 +11,60 @@
         <header class="card-header">
           <p class="card-header-title">
             <span class="icon"><i class="mdi mdi-ballot"></i></span>
-            Add Category
+            Edit Category
           </p>
         </header>
         <div class="card-content">
-          <form action="/admin/addcat" method="post">
+          <form action="/admin/editcat/<%= cat.one_cat._id %>" method="post">
             <div class="field">
               <label class="label">Category Name</label>
               <div class="field-body">
                 <div class="field">
                   <div class="control icons-left">
-                    <input class="input" type="text" placeholder="Category Name" name="cat_name">
-                    <span class="icon left"><i class="mdi mdi-cat"></i></span>
+                    <input class="input" type="text" placeholder="Festival Name" name="cat_name" value="<%= cat.one_cat.cat_name %>">
+                    <!-- <span class="icon left"><i class="mdi mdi-account"></i></span> -->
                   </div>
                 </div>
                 <div class="field">
                   <label class="label">Image Url</label>
                   <div class="control">
-                    <input class="input" type="text" placeholder="Image Url" name="image_url">
+                    <input class="input" type="text" placeholder="Image Url" name="image_url" value="<%= cat.one_cat.image_url %>">
                   </div>
                 </div>
               </div>
             </div>
-            <div class="field">
-              <label class="label">Visibility</label>
-              <div class="control">
-                <div class="select">
-                  <select name="visibility">
-                    <option value="1">True</option>
-                    <option value="0">False</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+            <% if (cat.one_cat.parent_category_id != undefined ) { %>
             <div class="field">
               <label class="label">Select Category</label>
               <div class="control">
                 <div class="select">
-                  <select name="cat_id">
-                    <option  selected value> -- Select Category -- </option>
-                    <% for(var i=0; i<cat.length; i++) { %>
-                      <option value="<%= cat[i]._id %>"><%= cat[i].cat_name %></option>
+                  <select name="cat_id" >
+                    <% for(var i=0; i<cat.cat.length; i++) { %>
+                        <% if (cat.cat[i]._id.toString() == cat.one_cat.parent_category_id.toString()) { %>
+                            <option value="<%= cat.cat[i]._id %>" selected><%= cat.cat[i].cat_name %></option>
+                        <% } 
+                        else { %>
+                            <option value="<%= cat.cat[i]._id %>"><%= cat.cat[i].cat_name %></option>
+                        <% } %>
                     
                     <% } %> 
+                  </select>
+                </div>
+              </div>
+            </div>
+            <% } %>
+            <div class="field">
+              <label class="label">Visibility</label>
+              <div class="control">
+                <div class="select">
+                  <select name="visibility" value="<%= cat.one_cat.visibility %>">
+                    <% if (cat.one_cat.visibility == 1) { %>
+                        <option value="1">True</option>
+                        <option value="0">False</option>
+                    <% } else { %>
+                        <option value="0">False</option>
+                        <option value="1">True</option>
+                      <% } %>
                   </select>
                 </div>
               </div>
@@ -61,7 +72,11 @@
             <div class="field">
               <label class="label">Date</label>
               <div class="control">
-                <input class="input" type="date" name="date" placeholder="Date">
+                <input class="input" type="date" id="date_id" name="date" placeholder="Date">
+                <script>
+                  let date = new Date("<%= cat.one_cat.date %>").toLocaleDateString("en-CA");
+                  document.getElementById("date_id").value = date;
+                  </script>
               </div>
             </div>
             <div class="field grouped">

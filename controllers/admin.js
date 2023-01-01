@@ -151,6 +151,9 @@ exports.addImage = async (req, res) => {
     if(req.body.cat_id){
         image["cat_id"] = ObjectID(req.body.cat_id).valueOf();
     }
+    if(req.body.subcat_id){
+        image["subcat_id"] = ObjectID(req.body.subcat_id).valueOf();
+    }
     if(req.body.image_visibility){
         image["image_visibility"] = req.body.image_visibility ? req.body.image_visibility.trim() : "";
     }
@@ -164,7 +167,7 @@ exports.addImage = async (req, res) => {
         image["year"] = req.body.year ? req.body.year.trim() : "";
     }
     if(req.body.image_date){
-        image["image_date"] = req.body.image_date ? req.body.image_date.trim() : "";
+        image["image_date"] = req.body.image_date ? new Date(req.body.image_date.trim()) : "";
     }
 
     if (req.params.id == undefined) {
@@ -230,19 +233,28 @@ exports.deleteImage = async (req, res) => {
     
 }
 
-exports.addCat = async(req, res) => {
+exports.addCat = async (req, res) => {
     let resp = {}
 
     let cat = {};
 
-    if(req.body.cat_name){
+    if (req.body.cat_name) {
         cat["cat_name"] = req.body.cat_name ? req.body.cat_name.trim() : "";
     }
-    if(req.body.image_url){
+    if (req.body.image_url) {
         cat["image_url"] = req.body.image_url ? req.body.image_url.trim() : "";
     }
-    if(req.body.visibility){
+    if (req.body.visibility) {
         cat["visibility"] = req.body.visibility ? req.body.visibility.trim() : "";
+    }
+    if (req.body.cat_id) {
+        cat["parent_category_id"] = ObjectID(req.body.cat_id).valueOf();
+    }
+    else{
+        cat["parent_category_id"] = null;
+    }
+    if(req.body.date){
+        cat["date"] = req.body.date ? new Date(req.body.date.trim()) : "";
     }
 
     cat["createdAt"] = new Date();
@@ -265,13 +277,167 @@ exports.addCat = async(req, res) => {
 
 
 
+
+
 }
 
+exports.editCat = async (req, res) => {
+    let resp = {}
+
+    let cat = {};
+
+    if (req.body.cat_name) {
+        cat["cat_name"] = req.body.cat_name ? req.body.cat_name.trim() : "";
+    }
+    if (req.body.image_url) {
+        cat["image_url"] = req.body.image_url ? req.body.image_url.trim() : "";
+    }
+    if (req.body.visibility) {
+        cat["visibility"] = req.body.visibility ? req.body.visibility.trim() : "";
+    }
+    if (req.body.cat_id) {
+        cat["parent_category_id"] = ObjectID(req.body.cat_id).valueOf();
+    }
+    else{
+        cat["parent_category_id"] = null;
+    }
+    if(req.body.date){
+        cat["date"] = req.body.date ? new Date(req.body.date.trim()) : "";
+    }
+
+
+    cat["updatedAt"] = new Date();
+    db.get().collection("category").updateOne(
+        { _id: ObjectID(req.params.id).valueOf() },
+        { $set: cat }
+    ).then(result => {
+
+        resp["success"] = 200;
+        resp["message"] = "Category successfully updated.";
+
+        return res.redirect('/admin/getall/cat');
+
+        //return res.status(200).json(resp);
+    }).catch(err => {
+        console.log("error....", err);
+        resp["success"] = 500;
+        resp["message"] = "Something went wrong.";
+
+        return res.redirect('/');
+
+    });
+
+
+
+
+
+
+}
+
+exports.subCat = async (req, res) => {
+    let resp = {}
+
+    db.get().collection("category").aggregate([
+        {
+            $match :{_id:ObjectID(req.params.id).valueOf(),parent_category_id:null}
+        },
+        { $lookup:
+            {
+              from: 'category',
+              localField: '_id',
+              foreignField: 'parent_category_id',
+              as: 'sub_cat',
+            }               
+          },
+    ]).toArray().then(cat => {
+
+        resp["success"] = 200;
+        resp["cat"] = cat;
+        resp["message"] = "Category successfully updated.";
+
+        //return res.status(200).json(resp);
+        return res.render('allsubcat',{cat : cat});
+
+    }).catch(err => {
+        console.log("error....", err);
+        resp["success"] = 500;
+        resp["message"] = "Something went wrong.";
+
+        return res.redirect('/');
+
+    });
+
+}
+
+exports.editAllImg = async (req, res) => {
+    let resp = {}
+
+    let img = {};
+
+    if (req.body.new_v) {
+        img["image_visibility"] = req.body.new_v ? req.body.new_v.trim() : "";
+    }
+
+    img["updatedAt"] = new Date();
+    db.get().collection("images").updateMany(
+        { image_visibility :  req.body.old_v.trim()},
+        { $set: img }
+    ).then(result => {
+
+        resp["success"] = 200;
+        resp["message"] = "Images successfully updated.";
+
+        return res.redirect('/admin/getall/image');
+
+        //return res.status(200).json(resp);
+    }).catch(err => {
+        console.log("error....", err);
+        resp["success"] = 500;
+        resp["message"] = "Something went wrong.";
+
+        return res.redirect('/');
+
+    });
+
+
+
+
+
+
+}
+
+exports.deleteCat = async (req, res) => {
+    let resp = {};
+
+    db.get().collection("category").deleteOne(
+        { _id: ObjectID(req.params.id).valueOf()},
+    ).then(result => {
+
+        resp["success"] = 200;
+        resp["message"] = "category successfully deleted.";
+        return res.redirect('/admin/getall/cat');
+    }).catch(err => {
+        console.log("error....", err);
+        resp["success"] = 500;
+        resp["message"] = "Something went wrong.";
+
+        return res.redirect('/');
+
+    });
+    
+}
 exports.getAll = async(req, res) => {
     let resp = {};
 
     if(req.params.type == "image"){
-        return res.redirect('/images');
+        console.log("pageno : ",req.params.pageno)
+        if(req.params.pageno != undefined){
+            return res.redirect(`/images/${req.params.pageno}`);
+        }
+        else{
+            return res.redirect(`/images/${1}`);
+        }
+        
     }
     else{
         return res.redirect('/cat');
@@ -305,12 +471,18 @@ exports.importCsv = async(req, res) => {
                     image["amount"] = data[i]["amount"] ? data[i]["amount"].trim() : "";
                     image["default_frames"] = data[i]["default_frames"] ? data[i]["default_frames"].trim() : "";
                     image["year"] = data[i]["year"] ? data[i]["year"].trim() : "";
-                    image["image_date"] = data[i]["image_date"] ? data[i]["image_date"].trim() : "";
+                    image["image_date"] = data[i]["image_date"] ? new Date(data[i]["image_date"].trim()) : "";
 
                     if (data[i]["cat_name"] != "") {
                         let cat = await db.get().collection("category").findOne({ cat_name: data[i]["cat_name"].trim() });
                         if (cat) {
                             image["cat_id"] = ObjectID(cat._id).valueOf();
+                        }
+                    }
+                    if (data[i]["subcat_name"] != "") {
+                        let cat = await db.get().collection("category").findOne({ cat_name: data[i]["subcat_name"].trim() });
+                        if (cat) {
+                            image["subcat_id"] = ObjectID(cat._id).valueOf();
                         }
                     }
                     image["createdAt"] = new Date();

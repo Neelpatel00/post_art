@@ -66,6 +66,19 @@
             </div>
           </div>
           <div class="field">
+            <label class="label">Select Sub Category</label>
+            <div class="control">
+              <div class="select">
+                <select name="subcat_id">
+                  <option  selected value> -- Select Sub Category -- </option>
+                  <% for(var i=0; i<cat.length; i++) { %>
+                  <option value="<%= cat[i]._id %> "><%= cat[i].cat_name %></option>
+                  <% } %> 
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="field">
             <label class="label">Image Visibility</label>
             <div class="control">
               <div class="select">
