@@ -148,8 +148,8 @@ router.post('/v2/pay',middleware.checkToken,apis.Pay);
 router.delete('/v2/deleteuser',middleware.checkToken,apis.deleteUser);
 router.get('/v2/logout',middleware.checkToken,apis.Logout);
 
-router.post('/v2/home',middleware.checkToken,apis.getHome);
-router.post('/v2/images',middleware.checkToken,apis.getImageById);
+router.post('/v2/home',apis.getHome);
+router.post('/v2/images',apis.getImageById);
 
 const admin = require('../controllers/admin');
 const { ObjectID } = require('bson');
