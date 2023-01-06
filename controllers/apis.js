@@ -452,8 +452,10 @@ exports.getHome = async (req, res) => {
             }
         ]).sort({ date: 1 }).toArray()
 
-        for (let i = 0; i < sub_cat[0].images.length; i++) {
-            sub_cat[0].images[i].image_url = `https://gitlab.com/ayurvedchikitsamd/post_art_one/-/raw/main/${sub_cat[0].images[i].image_url}`
+        for (let j = 0; j < sub_cat.length;j++) {
+            for (let i = 0; i < sub_cat[j].images.length; i++) {
+                sub_cat[j].images[i].image_url = `https://gitlab.com/ayurvedchikitsamd/post_art_one/-/raw/main/${sub_cat[j].images[i].image_url}`
+            }
         }
         resp["success"] = 200;
         resp["message"] = "Successfull.";
