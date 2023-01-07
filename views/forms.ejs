@@ -59,7 +59,7 @@
               <div class="select">
                 <select name="cat_id">
                   <% for(var i=0; i<cat.length; i++) { %>
-                  <option value="<%= cat[i]._id %> "><%= cat[i].cat_name %></option>
+                  <option value="<%= cat[i]._id %>"><%= cat[i].cat_name %></option>
                   <% } %> 
                 </select>
               </div>
@@ -72,7 +72,7 @@
                 <select name="subcat_id">
                   <option  selected value> -- Select Sub Category -- </option>
                   <% for(var i=0; i<cat.length; i++) { %>
-                  <option value="<%= cat[i]._id %> "><%= cat[i].cat_name %></option>
+                  <option value="<%= cat[i]._id %>"><%= cat[i].cat_name %></option>
                   <% } %> 
                 </select>
               </div>

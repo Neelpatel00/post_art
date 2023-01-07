@@ -136,6 +136,8 @@ exports.addImage = async (req, res) => {
 
     let image = {};
 
+    console.log("req.body : ",req.body)
+
     if(req.body.fst_name){
         image["festival_name"] = req.body.fst_name ? req.body.fst_name.trim() : "";
     }
@@ -149,10 +151,10 @@ exports.addImage = async (req, res) => {
         image["resolution"] = req.body.reso ? req.body.reso.trim() : "";
     }
     if(req.body.cat_id){
-        image["cat_id"] = ObjectID(req.body.cat_id).valueOf();
+        image["cat_id"] = ObjectID(req.body.cat_id.trim()).valueOf();
     }
     if(req.body.subcat_id){
-        image["subcat_id"] = ObjectID(req.body.subcat_id).valueOf();
+        image["subcat_id"] = ObjectID(req.body.subcat_id.trim()).valueOf();
     }
     if(req.body.image_visibility){
         image["image_visibility"] = req.body.image_visibility ? req.body.image_visibility.trim() : "";
