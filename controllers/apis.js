@@ -299,6 +299,15 @@ exports.UserProfile = async (req, res) => {
     let user_id = ObjectID(req.decoded._id).valueOf();
 
     db.get().collection("users").findOne({_id:user_id}).then( result => {
+
+        db.get().collection("users").updateOne(
+            { _id: user_id },
+            {
+                $set: {
+                    updatedAt: new Date(),
+                }
+            }
+        );
         
         resp["success"] = 200;
         resp["message"] = "Successfull.";

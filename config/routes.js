@@ -170,4 +170,21 @@ router.get('/admin/subcat/:id', middleware.checkAdminToken,admin.subCat);
 
 router.post('/admin/importcsv', middleware.checkAdminToken, upload.single('csv_data'),admin.importCsv);
 
+router.post('/admin/react_login',admin.reactLogin);
+router.post('/admin/react_images', middleware.checkAdminToken,admin.reactImages);
+router.post('/admin/react_users', middleware.checkAdminToken,admin.reactUsers);
+router.post('/admin/react_addImage', middleware.checkAdminToken,admin.reactAddImage);
+router.put('/admin/react_editImage/:id', middleware.checkAdminToken,admin.reactAddImage);
+router.delete('/admin/deleteImage/:id', middleware.checkAdminToken,admin.reactDeleteImage);
+router.get('/admin/cat', middleware.checkAdminToken,admin.reactCat);
+
+router.post('/admin/react_addCat', middleware.checkAdminToken,admin.reatAddCat);
+router.put('/admin/react_editCat/:id', middleware.checkAdminToken,admin.reatAddCat);
+router.delete('/admin/react_deleteCat/:id', middleware.checkAdminToken,admin.reactDeleteCat);
+router.get('/admin/react_subcat/:id', middleware.checkAdminToken,admin.reactSubCat);
+
+router.get('/admin/react_home', middleware.checkAdminToken,admin.reactHomeData);
+
+router.post('/admin/reactimportcsv', middleware.checkAdminToken, upload.single('csv_data'),admin.react_ImportCsv);
+
 module.exports = router;
