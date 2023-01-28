@@ -678,6 +678,9 @@ exports.reactAddImage = async (req, res) => {
     if(req.body.image_date){
         image["image_date"] = req.body.image_date ? new Date(req.body.image_date.trim()) : "";
     }
+    if(req.body.isBackground){
+        image["isBackground"] = req.body.isBackground ? req.body.isBackground.trim() : "0";
+    }
 
     if (req.params.id == undefined) {
         image["createdAt"] = new Date();
