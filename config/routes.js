@@ -187,4 +187,6 @@ router.get('/admin/react_home', middleware.checkAdminToken,admin.reactHomeData);
 
 router.post('/admin/reactimportcsv', middleware.checkAdminToken, upload.single('csv_data'),admin.react_ImportCsv);
 
+router.post('/admin/sendnotification', admin.sendNotification);
+
 module.exports = router;

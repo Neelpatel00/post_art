@@ -17,6 +17,17 @@ app.use(express.static(__dirname + '/public/'));
 const post_art = require('./config/routes');
 app.use('/',post_art);
 
+const firebase_admin = require("firebase-admin");
+
+firebase_admin.initializeApp({
+    credential: firebase_admin.credential.cert({
+      projectId: process.env.FireBasePROJECTID,
+      clientEmail: process.env.FireBaseClientEmail,
+      privateKey: process.env.FireBasePrivateKey
+    })
+});
+
+
 let port = process.env.PORT || 2200;
 
 

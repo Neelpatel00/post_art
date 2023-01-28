@@ -904,6 +904,7 @@ exports.react_ImportCsv = async(req, res) => {
                     image["default_frames"] = data[i]["default_frames"] ? data[i]["default_frames"].trim() : "";
                     image["year"] = data[i]["year"] ? data[i]["year"].trim() : "";
                     image["image_date"] = data[i]["image_date"] ? new Date(data[i]["image_date"].trim()) : "";
+                    image["isBackground"] = data[i]["isBackground"] ? new Date(data[i]["isBackground"].trim()) : "0";
 
                     if (data[i]["cat_name"] != "") {
                         let cat = await db.get().collection("category").findOne({ cat_name: data[i]["cat_name"].trim() });
@@ -965,3 +966,73 @@ exports.reactHomeData = async(req, res) => {
     resp["last_user"] = users[0];
     return res.status(200).json(resp);
 }
+
+exports.sendNotification = async (req, res) => {
+
+    let resp = {};
+    const firebase_admin = require("firebase-admin");
+    console.log("req.body : ",req.body);
+    //let fcm_token = "e5EeNI9gT7yfbl0xIM4ipl:APA91bHT4c46PplfK2OJKz-h8NiK3MKbspNF8DX2BhSrpk5q65BKd97cfBPij3P7n4Z9ziegg9ABh8fOM78zpwKgOwol6MTGnDSgk0fZ19SoDjw0xHio9g8Su3e8dFw8igKM4B1KvNUi"//req.body.fcm_token ? req.body.fcm_token.trim() : "";
+
+    let title = req.body.title ? req.body.title : "PostArtistry";
+    let msg = req.body.msg ? req.body.msg : 'Wlecome to PostArtistry World!';
+    let img_url = req.body.img_url ? req.body.img_url : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYiVAH6OnX_wjJazcH9HDGWvIEI4acoV4-cw&usqp=CAU';
+
+    let fcm_tokens = [];
+
+    if(req.body.fcm_token){
+        fcm_tokens.push(req.body.fcm_token.trim());
+    }
+    else{
+        let users = await db.get().collection("users").find().sort({ createdAt: -1 }).toArray();
+
+        for(let i=0; i< users.length; i++){
+            if(users[i].fcm_token != "" && users[i].fcm_token != null){
+                fcm_tokens.push(users[i].fcm_token.trim());
+            }
+        }
+    }
+    
+    if(fcm_tokens.length > 0){
+        let payload = {
+            notification: {
+                title: title,
+                body: msg,
+                image:img_url
+              },
+              //data: { link_type: 'nolink', display_for: 'member' }
+            data: {
+                "attachment-url": img_url
+            },
+
+          };
+          let options = {
+            mutableContent : true
+         }
+          firebase_admin.messaging().sendToDevice(fcm_tokens, payload,options)
+            .then(response => {
+            //   console.log('ress:', response);
+            //   console.log('payload : ', payload);
+            console.log('successCount :', response.successCount);
+            console.log('failureCount :', response.failureCount);
+              resp["error"] = 0;
+              resp["message"] = 'successfull';
+              resp["result"] = response;
+
+              res.status(200).json(resp);
+
+            })
+            .catch(error => {
+                console.log('error:', error);
+                resp["error"] = 1;
+                resp["message"] = 'Something went wrong';
+                res.status(200).json(resp);
+            });
+    }
+    else {
+        resp["error"] = 1;
+        resp["message"] = 'Something went wrong';
+        res.status(200).json(resp);
+    }
+
+};
