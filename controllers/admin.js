@@ -904,7 +904,7 @@ exports.react_ImportCsv = async(req, res) => {
                     image["default_frames"] = data[i]["default_frames"] ? data[i]["default_frames"].trim() : "";
                     image["year"] = data[i]["year"] ? data[i]["year"].trim() : "";
                     image["image_date"] = data[i]["image_date"] ? new Date(data[i]["image_date"].trim()) : "";
-                    image["isBackground"] = data[i]["isBackground"] ? new Date(data[i]["isBackground"].trim()) : "0";
+                    image["isBackground"] = data[i]["isBackground"] ? data[i]["isBackground"].trim() : "0";
 
                     if (data[i]["cat_name"] != "") {
                         let cat = await db.get().collection("category").findOne({ cat_name: data[i]["cat_name"].trim() });
@@ -912,15 +912,22 @@ exports.react_ImportCsv = async(req, res) => {
                             image["cat_id"] = ObjectID(cat._id).valueOf();
                         }
                     }
-                    if (data[i]["subcat_name"] != "") {
+                    if (data[i]["subcat_name"] != "" && data[i]["subcat_name"] != undefined) {
+                        console.log("data[i] : ",data[i]["subcat_name"]);
                         let cat = await db.get().collection("category").findOne({ cat_name: data[i]["subcat_name"].trim() });
                         if (cat) {
                             image["subcat_id"] = ObjectID(cat._id).valueOf();
                         }
+                        else{
+                            image["subcat_id"] = null;
+                        }
+                    }
+                    else{
+                        image["subcat_id"] = null;
                     }
                     image["createdAt"] = new Date();
                     db.get().collection("images").insertOne(image);
-                    console.log("image : ",image);
+                    //console.log("image : ",image);
                     arr.push(image);
                 }
 
