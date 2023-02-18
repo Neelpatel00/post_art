@@ -25,21 +25,12 @@ exports.register = async (req, res) => {
     if (req.body.phone) {
         users["phone"] = req.body.phone.trim()
     }
-    if (req.body.address) {
-        users["address"] = req.body.address.trim()
-    }
-    if (req.body.website) {
-        users["website"] = req.body.website.trim()
-    }
-    if (req.body.facebook) {
-        users["facebook"] = req.body.facebook.trim()
-    }
-    if (req.body.instagram) {
-        users["instagram"] = req.body.instagram.trim()
-    }
-    if (req.body.youtube) {
-        users["youtube"] = req.body.youtube.trim()
-    }
+    users["address"] = req.body.address ? req.body.address.trim() : "";
+    users["website"] = req.body.website ? req.body.website.trim() : "";
+    users["facebook"] = req.body.facebook ? req.body.facebook.trim() : "";
+    users["instagram"] = req.body.instagram ? req.body.instagram.trim() : "";
+    users["youtube"] = req.body.youtube ? req.body.youtube.trim() : "";
+
     if (req.body.fcm_token) {
         users["fcm_token"] = req.body.fcm_token.trim()
     }
