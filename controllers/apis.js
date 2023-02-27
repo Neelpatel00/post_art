@@ -629,3 +629,109 @@ exports.Logout = async (req, res) => {
 
     });
 };
+
+exports.getQuotes = async (req, res) => {
+    let resp = {};
+
+    let pageno = (req.body.pageno && req.body.pageno != 0) ? req.body.pageno : 1;
+    let limit = 15;
+    let offset = (pageno - 1) * limit;
+    let search_params = req.body.search_params ? req.body.search_params.trim() : "";
+    let cat_id = req.body.cat_id ? req.body.cat_id.trim() : "12";
+    let count = 214775;
+    let query = {};
+    if(req.body.search_params){
+        query = { $or : [ { txt: { $regex: search_params, $options: '$ i' } }, { author: { $regex: search_params, $options: '$ i' } } ], is_active:"1",cat_id:cat_id };
+        let data = await db.get2().collection("quotes").find(query).toArray();
+        count = data.length
+    }
+    else{
+        query = { is_active:"1",cat_id:cat_id };
+        let data = await db.get2().collection("quotes").find(query).toArray();
+        count = data.length
+    }
+    
+    db.get2().collection("quotes").find(query)
+    .skip(offset)
+    .limit(limit)
+    .toArray().then((result) => {
+       
+        if (result.length > 0) {
+            resp["success"] = 200;
+            resp["message"] = "Successfull.";
+            resp["count"] = count;
+            resp["pages"] = Math.abs(Math.ceil(count / limit));
+            resp["data"] = result;
+
+        }
+        else{
+            resp["success"] = 500;
+            resp["message"] = "No Quotes Found.";
+        }
+        resp["today_date"] = today_date;
+        resp["ads_views"] = ads_count;
+
+        return res.status(200).json(resp);
+    }).catch(err => {
+        console.log("error....", err);
+        resp["success"] = 500;
+        resp["message"] = "Something went wrong.";
+
+        return res.status(200).json(resp);
+
+    });
+    
+};
+
+
+exports.getCat = async (req, res) => {
+    let resp = {};
+
+    let pageno = (req.body.pageno && req.body.pageno != 0) ? req.body.pageno : 1;
+    let limit = 15;
+    let offset = (pageno - 1) * limit;
+    let search_params = req.body.search_params ? req.body.search_params.trim() : "";
+    let count = 0;
+    let query = {};
+    if(req.body.search_params){
+        query = {  name: { $regex: search_params, $options: '$ i' } , is_active:"1"};
+        let data = await db.get2().collection("category").find(query).toArray();
+        count = data.length
+    }
+    else{
+        query = { is_active:"1" };
+        let data = await db.get2().collection("category").find(query).toArray();
+        count = data.length
+    }
+    
+    db.get2().collection("category").find(query)
+    .skip(offset)
+    .limit(limit)
+    .toArray().then((result) => {
+       
+        if (result.length > 0) {
+            resp["success"] = 200;
+            resp["message"] = "Successfull.";
+            resp["count"] = count;
+            resp["pages"] = Math.abs(Math.ceil(count / limit));
+            resp["data"] = result;
+
+        }
+        else{
+            resp["success"] = 500;
+            resp["message"] = "No Category Found.";
+        }
+        resp["today_date"] = today_date;
+        resp["ads_views"] = ads_count;
+
+        return res.status(200).json(resp);
+    }).catch(err => {
+        console.log("error....", err);
+        resp["success"] = 500;
+        resp["message"] = "Something went wrong.";
+
+        return res.status(200).json(resp);
+
+    });
+    
+};

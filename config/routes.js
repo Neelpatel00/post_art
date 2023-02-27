@@ -151,6 +151,9 @@ router.get('/v2/logout',middleware.checkToken,apis.Logout);
 router.post('/v2/home',apis.getHome);
 router.post('/v2/images',apis.getImageById);
 
+router.post('/v2/quotes',apis.getQuotes);
+router.post('/v2/category',apis.getCat);
+
 const admin = require('../controllers/admin');
 const { ObjectID } = require('bson');
 
@@ -181,7 +184,7 @@ router.get('/admin/cat', middleware.checkAdminToken,admin.reactCat);
 router.post('/admin/react_addCat', middleware.checkAdminToken,admin.reatAddCat);
 router.put('/admin/react_editCat/:id', middleware.checkAdminToken,admin.reatAddCat);
 router.delete('/admin/react_deleteCat/:id', middleware.checkAdminToken,admin.reactDeleteCat);
-router.get('/admin/react_subcat/:id', middleware.checkAdminToken,admin.reactSubCat);
+router.get('/admin/react_subcat/:id?', middleware.checkAdminToken,admin.reactSubCat);
 
 router.get('/admin/react_home', middleware.checkAdminToken,admin.reactHomeData);
 

@@ -769,9 +769,17 @@ exports.reactCat = async (req, res) => {
 
 exports.reactSubCat = async (req, res) => {
     let resp = {};
-    console.log("id : ",req.params.id)
-    let cat_id = ObjectID(req.params.id).valueOf();
-    db.get().collection("category").find({parent_category_id : cat_id}).toArray().then(result => {
+    let query = {};
+    if(req.params.id){
+        console.log("id : ",req.params.id)
+        let cat_id = ObjectID(req.params.id).valueOf();
+        query = {parent_category_id : cat_id};
+    }
+    else{
+        query = {parent_category_id : {$ne : null}}
+    }
+    
+    db.get().collection("category").find(query).toArray().then(result => {
 
         resp["success"] = 200;
         resp["cat"] = result;
@@ -985,6 +993,10 @@ exports.sendNotification = async (req, res) => {
     let msg = req.body.msg ? req.body.msg : 'Wlecome to PostArtistry World!';
     let img_url = req.body.img_url ? req.body.img_url : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYiVAH6OnX_wjJazcH9HDGWvIEI4acoV4-cw&usqp=CAU';
 
+    let type = req.body.type ? req.body.type : "5";
+    let cat_id = req.body.cat_id ? req.body.cat_id : "";
+    let subcat_id = req.body.subcat_id ? req.body.subcat_id : "";
+
     let fcm_tokens = [];
 
     if(req.body.fcm_token){
@@ -1002,14 +1014,19 @@ exports.sendNotification = async (req, res) => {
     
     if(fcm_tokens.length > 0){
         let payload = {
-            notification: {
-                title: title,
-                body: msg,
-                image:img_url
-              },
+            // notification: {
+            //     title: title,
+            //     body: msg,
+            //     image:img_url
+            //   },
               //data: { link_type: 'nolink', display_for: 'member' }
             data: {
-                "attachment-url": img_url
+                title: title,
+                body: msg,
+                "attachment-url": img_url,
+                type:type,
+                cat_id:cat_id,
+                subcat_id:subcat_id,
             },
 
           };

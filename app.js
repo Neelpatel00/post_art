@@ -46,5 +46,12 @@ if(process.env.NODE_ENV == 'dev'){
             });
         }
     })
+    db.connect2(process.env.DB_URL_2, (err) =>{
+        if (err) {
+            console.log('Unable to connect to Mongo.');
+            console.log('error : ',err);
+            process.exit(1)
+        }
+    });
 }
 
